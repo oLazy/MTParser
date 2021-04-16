@@ -17,7 +17,6 @@ Written in c++ std=c++17.
 * some reading of the first 7 chapters of PPP2 (https://www.stroustrup.com/programming.html)
 
 ## TO DO:
-* move into usable library
 * test with more input files
 * clean and document the code
 * find bugs & debug
