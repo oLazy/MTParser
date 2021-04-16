@@ -1,0 +1,44 @@
+\hypertarget{class_m_tparser_1_1_parser}{}\doxysection{MTparser\+::Parser Class Reference}
+\label{class_m_tparser_1_1_parser}\index{MTparser::Parser@{MTparser::Parser}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_m_tparser_1_1_parser_aab25d12b5508987c9dbb9d6ed6917259}\label{class_m_tparser_1_1_parser_aab25d12b5508987c9dbb9d6ed6917259}} 
+void {\bfseries parse} (string const \&)
+\item 
+Option\+\_\+list \mbox{\hyperlink{class_m_tparser_1_1_parser_abc80cf4135876d5692cb46154fe29f54}{get\+\_\+option\+\_\+list\+\_\+for}} (string const \&key) const
+\item 
+\mbox{\Hypertarget{class_m_tparser_1_1_parser_a456890eda425db3fa904daf0ebaa04d0}\label{class_m_tparser_1_1_parser_a456890eda425db3fa904daf0ebaa04d0}} 
+Data\+\_\+set {\bfseries get\+\_\+data\+\_\+set\+\_\+for} (string const \&key) const
+\item 
+\mbox{\Hypertarget{class_m_tparser_1_1_parser_a19e2d87653b673920a3c645220565216}\label{class_m_tparser_1_1_parser_a19e2d87653b673920a3c645220565216}} 
+Data\+\_\+block {\bfseries get} () const
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_m_tparser_1_1_parser_abc80cf4135876d5692cb46154fe29f54}\label{class_m_tparser_1_1_parser_abc80cf4135876d5692cb46154fe29f54}} 
+\index{MTparser::Parser@{MTparser::Parser}!get\_option\_list\_for@{get\_option\_list\_for}}
+\index{get\_option\_list\_for@{get\_option\_list\_for}!MTparser::Parser@{MTparser::Parser}}
+\doxysubsubsection{\texorpdfstring{get\_option\_list\_for()}{get\_option\_list\_for()}}
+{\footnotesize\ttfamily Option\+\_\+list MTparser\+::\+Parser\+::get\+\_\+option\+\_\+list\+\_\+for (\begin{DoxyParamCaption}\item[{string const \&}]{key }\end{DoxyParamCaption}) const}
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & \mbox{[}in\mbox{]} the keyword related to the data block of interest. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the option list related to the data block key.
+\end{DoxyReturn}
+Usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{auto} ol = my\_parser.get\_option\_list\_for(\textcolor{stringliteral}{"{}>HEAD"{}});}
+
+\end{DoxyCode}
+ 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Parser.\+h\item 
+Parser.\+cpp\end{DoxyCompactItemize}
