@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <strstream>
-#include "Tokenizer.h"
 #include "Parser.h"
 
 std::string getFileContents(std::ifstream&);
@@ -14,9 +13,7 @@ int main() {
         if(!file.is_open())throw std::runtime_error("Cannot open file "+ fileName+"\n");
         std::string fileContents = getFileContents(file);
         file.close();
-        MTparser::Tokenizer tokenizer;
 
-        MTparser::vector<MTparser::Token> tokens = tokenizer.parse(fileContents);
         MTparser::Parser p;
         p.parse(fileContents);
         MTparser::Data_set ds;
@@ -31,7 +28,7 @@ int main() {
             std::cout << "\tdataset:\n";
 
             ds = p.get_data_set_for(it->first);
-            for (auto d : MTparser::dataset2double(ds)){
+            for (auto d : MTparser::dataset2double(ds, p.get_option_list_for(">HEAD")["EMPTY"])){
                 std::cout << "\t\t" << d << std::endl;
             }
         }

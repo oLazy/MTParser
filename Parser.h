@@ -14,7 +14,7 @@ namespace MTparser {
     typedef map<string ,string > Option_list;
     typedef map<string,tuple<Option_list , Data_set>> Data_block;
 
-    vector<double> dataset2double(Data_set const&);
+    vector<double> dataset2double(Data_set const& , string const skip = "");
 
     class Parser {
     public:

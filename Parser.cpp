@@ -3,7 +3,7 @@
 //
 
 #include "Parser.h"
-
+#include <cmath>
 namespace MTparser {
     void Parser::parse(vector<Token> &t){
         for(auto ti = t.begin(); ti != t.end();ti++){
@@ -105,10 +105,14 @@ namespace MTparser {
     }
 
 
-    vector<double> dataset2double(const Data_set &ds) {
+    vector<double> dataset2double(const Data_set &ds, string const skip) {
         vector<double> res;
         for (auto d : ds){
-            res.push_back(stod(d));
+            if (d!=skip){
+                res.push_back(stod(d));}
+            else {
+                res.push_back(nan(""));
+            }
         }
         return res;
     }
