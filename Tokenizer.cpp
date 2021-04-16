@@ -46,6 +46,15 @@ namespace MTparser{
                         currentToken.text.append(1, currCh);
                     }
                     break;
+                case '"':
+                    if (currentToken.type == WHITESPACE) {
+                        currentToken.type = Q_STRING;
+                        currentToken.text.append(1,currCh);
+                    } else if (currentToken.type == Q_STRING){
+                        currentToken.text.append(1,currCh);
+                        endToken(currentToken, tokens);
+                    }
+                    break;
                 case '.':
                     if (currentToken.type == WHITESPACE){
                         currentToken.type = POTENTIAL_REAL;
@@ -53,11 +62,14 @@ namespace MTparser{
                     }else if (currentToken.type == INT || currentToken.type == UNSIGNED_INT){
                         currentToken.type = REAL;
                         currentToken.text.append(1, currCh);
-                    } else if(currentToken.type == STRING){
+                    } else if(currentToken.type == STRING || currentToken.type == Q_STRING){
                         currentToken.text.append(1,currCh);
-                    } else {
-                        endToken(currentToken,tokens);
+                    } else if(currentToken.type == KEYWORD) {
+                        currentToken.text.append(1, currCh);
                     }
+//                    } else {
+//                        endToken(currentToken,tokens);
+//                    }
                     break;
                 case '=':
                     if(currentToken.type == SPECIAL){
@@ -68,6 +80,17 @@ namespace MTparser{
                         currentToken.type = OPERATOR;
                         currentToken.text.append(1, currCh);
                         endToken(currentToken,tokens);
+                    }
+                    break;
+                case ':':
+                    if(currentToken.type == INT){
+                        currentToken.type = POT_LAT_LONG;
+                        currentToken.text.append(1, currCh);
+                    } else if (currentToken.type == POT_LAT_LONG) {
+                        currentToken.type == LAT_LONG;
+                        currentToken.text.append(1, currCh);
+                    } else {
+                        currentToken.text.append(1, currCh);
                     }
                     break;
                 case 'a' ... 'd':
@@ -90,6 +113,8 @@ namespace MTparser{
                         currentToken.type = EXP;
                         currentToken.text.append(1,currCh);
                     } else if (currentToken.type == SPECIAL || currentToken.type == KEYWORD) {
+                        currentToken.text.append(1,currCh);
+                    } else{
                         currentToken.text.append(1,currCh);
                     }
                     break;
@@ -121,6 +146,8 @@ namespace MTparser{
                 case ' ':
                 case '\t':
                     if (currentToken.type == COMMENT){
+                        currentToken.text.append(1,currCh);
+                    } else if (currentToken.type == Q_STRING){
                         currentToken.text.append(1,currCh);
                     } else {
                         endToken(currentToken,tokens);

@@ -1,0 +1,3 @@
+/Users/eric79/CLionProjects/myparser/MTParser/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/eric79/CLionProjects/myparser/MTParser/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/eric79/CLionProjects/myparser/MTParser/cmake-build-debug/CMakeFiles/MTParser.dir
