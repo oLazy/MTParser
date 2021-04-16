@@ -87,7 +87,7 @@ namespace MTparser{
                         currentToken.type = POT_LAT_LONG;
                         currentToken.text.append(1, currCh);
                     } else if (currentToken.type == POT_LAT_LONG) {
-                        currentToken.type == LAT_LONG;
+                        currentToken.type = LAT_LONG;
                         currentToken.text.append(1, currCh);
                     } else {
                         currentToken.text.append(1, currCh);
@@ -135,7 +135,7 @@ namespace MTparser{
                     } else if (currentToken.type == WHITESPACE){
                         currentToken.type = POT_DATA_GUARDIAN;
                         currentToken.text.append(1,currCh);
-                    } else if (currentToken.type = POT_DATA_GUARDIAN){
+                    } else if (currentToken.type == POT_DATA_GUARDIAN){
                         currentToken.type = DATA_GUARDIAN;
                         currentToken.text.append(1,currCh);
                         endToken(currentToken,tokens);
