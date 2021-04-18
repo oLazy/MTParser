@@ -7,7 +7,7 @@ std::string getFileContents(std::ifstream&);
 int main() {
     try{
         std::cout << "MTParser 1.0\n";
-        std::string fileName{"pc5009c.edi"};
+        std::string fileName{"/Users/eric79/Downloads/cop2_orig_edi/84_013.edi"};
         std::ifstream file;
         file.open(fileName);
         if(!file.is_open())throw std::runtime_error("Cannot open file "+ fileName+"\n");
