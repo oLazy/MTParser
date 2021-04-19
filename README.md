@@ -15,6 +15,7 @@ Written in c++ std=c++17.
 * https://github.com/uliwitness/simpleparser
 * my own gut and expertise
 * some reading of the first 7 chapters of PPP2 (https://www.stroustrup.com/programming.html)
+* plot facilities based on http://www.stahlke.org/dan/gnuplot-iostream
 
 ## TO DO:
 * test with more input files
