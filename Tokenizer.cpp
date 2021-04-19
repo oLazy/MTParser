@@ -149,6 +149,9 @@ namespace MTparser{
                         currentToken.text.append(1,currCh);
                     } else if (currentToken.type == Q_STRING){
                         currentToken.text.append(1,currCh);
+                    } else if (currentToken.type == SIGN){
+                        currentToken.type = STRING;
+                        endToken(currentToken,tokens);
                     } else {
                         endToken(currentToken,tokens);
                     }
@@ -160,6 +163,9 @@ namespace MTparser{
                     break;
                 default:
                     if(currentToken.type == WHITESPACE || currentToken.type == INT || currentToken.type == REAL){
+                        endToken(currentToken,tokens);
+                    } else if (currentToken.type == SIGN){
+                        currentToken.type = STRING;
                         endToken(currentToken,tokens);
                     }
                     break;

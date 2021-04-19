@@ -14,6 +14,15 @@
 #include <cmath>
 #include <boost/filesystem.hpp>
 
+struct measure{
+    double val{nan("")};
+    double error{0};
+};
+
+constexpr double mu0 = M_PI*4e-7;
+
+measure get_rho(double z_real, double z_imag, double z_var, double freq);
+measure get_phi(double z_real, double z_imag, double z_var);
 
 boost::program_options::options_description parse_cmdline(int argc, char *argv[], boost::program_options::variables_map& p_vm);
 std::string getFileContents(std::ifstream&);
@@ -76,47 +85,124 @@ int main(int argc, char* argv[]){
 
 
         auto title = pathObject.filename().string();
+
         auto pos = title.find('_');
-        title.insert(pos,"\\");
+        if(pos!=std::string::npos)title.insert(pos,"\\");
+        gp << "set term qt enhanced 'Times-Roman, 9'\n";
         gp << "set title '" + title +"'\n";
+        gp << "unset key\n";
         gp << "set multiplot layout 2,2\n";
         gp << "set logscale x\n";
 //        gp << "set logscale y\n";
-        gp << "set xlabel 'Frequency (Hz)'\n";
-        gp << "set ylabel 'Impedance (Ohm)'\n";
+        if (false) {
+            gp << "set xlabel 'Frequency (Hz)'\n";
+            gp << "set ylabel 'Impedance (Ohm)'\n";
 
-        // XX
-        gp << "set title '" + title +"-XX'\n";
-        gp << "plot "
-              << "'-' with errorbars pt 3 lc rgb '#F0BC42' title 're(z_{xx})', "
-              << "'-' with errorbars pt 4 lc rgb '#8E1F2F' title 'im(z_{xx})'"
-              << "\n";
-        gp.send1d(std::make_tuple( freq, zxxr, zxxs));
-        gp.send1d(std::make_tuple( freq, zxxi, zxxs));
-        // XY
-        gp << "set title '" + title +"-XY'\n";
-        gp << "plot "
-           << "'-' with errorbars pt 3 lc rgb '#F0BC42' title 're(z_{xy})', "
-           << "'-' with errorbars pt 4 lc rgb '#8E1F2F' title 'im(z_{xy})'"
-           << "\n";
-        gp.send1d(std::make_tuple( freq, zxyr, zxys));
-        gp.send1d(std::make_tuple( freq, zxyi, zxys));
-        // YX
-        gp << "set title '" + title +"-YX'\n";
-        gp << "plot "
-           << "'-' with errorbars pt 3 lc rgb '#F0BC42' title 're(z_{yx})', "
-           << "'-' with errorbars pt 4 lc rgb '#8E1F2F' title 'im(z_{yx})'"
-           << "\n";
-        gp.send1d(std::make_tuple( freq, zyxr, zyxs));
-        gp.send1d(std::make_tuple( freq, zyxi, zyxs));
-        // YY
-        gp << "set title '" + title +"-YY'\n";
-        gp << "plot "
-           << "'-' with errorbars pt 3 lc rgb '#F0BC42' title 're(z_{yy})', "
-           << "'-' with errorbars pt 4 lc rgb '#8E1F2F' title 'im(z_{yy})'"
-           << "\n";
-        gp.send1d(std::make_tuple( freq, zyyr, zyys));
-        gp.send1d(std::make_tuple( freq, zyyi, zyys));
+            // XX
+            gp << "set title '" + title + "-XX'\n";
+            gp << "plot "
+               << "'-' with errorbars pt 3 lc rgb '#F0BC42' title 're(z_{xx})', "
+               << "'-' with errorbars pt 4 lc rgb '#8E1F2F' title 'im(z_{xx})'"
+               << "\n";
+            gp.send1d(std::make_tuple(freq, zxxr, zxxs));
+            gp.send1d(std::make_tuple(freq, zxxi, zxxs));
+            // XY
+            gp << "set title '" + title + "-XY'\n";
+            gp << "plot "
+               << "'-' with errorbars pt 3 lc rgb '#F0BC42' title 're(z_{xy})', "
+               << "'-' with errorbars pt 4 lc rgb '#8E1F2F' title 'im(z_{xy})'"
+               << "\n";
+            gp.send1d(std::make_tuple(freq, zxyr, zxys));
+            gp.send1d(std::make_tuple(freq, zxyi, zxys));
+            // YX
+            gp << "set title '" + title + "-YX'\n";
+            gp << "plot "
+               << "'-' with errorbars pt 3 lc rgb '#F0BC42' title 're(z_{yx})', "
+               << "'-' with errorbars pt 4 lc rgb '#8E1F2F' title 'im(z_{yx})'"
+               << "\n";
+            gp.send1d(std::make_tuple(freq, zyxr, zyxs));
+            gp.send1d(std::make_tuple(freq, zyxi, zyxs));
+            // YY
+            gp << "set title '" + title + "-YY'\n";
+            gp << "plot "
+               << "'-' with errorbars pt 3 lc rgb '#F0BC42' title 're(z_{yy})', "
+               << "'-' with errorbars pt 4 lc rgb '#8E1F2F' title 'im(z_{yy})'"
+               << "\n";
+            gp.send1d(std::make_tuple(freq, zyyr, zyys));
+            gp.send1d(std::make_tuple(freq, zyyi, zyys));
+        } else {
+            std::vector<double> rhoxx, srhoxx,phixx, sphixx;
+            for(int i=0;i<zxxr.size();++i){
+                auto this_rho = get_rho(zxxr[i],zxxi[i],zxxv[i],freq[i]);
+                rhoxx.push_back(this_rho.val);
+                srhoxx.push_back(this_rho.error);
+                auto this_phi = get_phi(zxxr[i],zxxi[i],zxxv[i]);
+                phixx.push_back(this_phi.val);
+                sphixx.push_back(this_phi.error);
+            }
+
+            std::vector<double> rhoxy, srhoxy,phixy, sphixy;
+            for(int i=0;i<zxyr.size();++i){
+                auto this_rho = get_rho(zxyr[i],zxyi[i],zxyv[i],freq[i]);
+                rhoxy.push_back(this_rho.val);
+                srhoxy.push_back(this_rho.error);
+                auto this_phi = get_phi(zxyr[i],zxyi[i],zxyv[i]);
+                phixy.push_back(this_phi.val);
+                sphixy.push_back(this_phi.error);
+            }
+
+            std::vector<double> rhoyx, srhoyx,phiyx, sphiyx;
+            for(int i=0;i<zyxr.size();++i){
+                auto this_rho = get_rho(zyxr[i],zyxi[i],zyxv[i],freq[i]);
+                rhoyx.push_back(this_rho.val);
+                srhoyx.push_back(this_rho.error);
+                auto this_phi = get_phi(zyxr[i],zyxi[i],zyxv[i]);
+                phiyx.push_back(this_phi.val);
+                sphiyx.push_back(this_phi.error);
+            }
+
+            std::vector<double> rhoyy, srhoyy,phiyy, sphiyy;
+            for(int i=0;i<zyyr.size();++i){
+                auto this_rho = get_rho(zyyr[i],zyyi[i],zyyv[i],freq[i]);
+                rhoyy.push_back(this_rho.val);
+                srhoyy.push_back(this_rho.error);
+                auto this_phi = get_phi(zyyr[i],zyyi[i],zyyv[i]);
+                phiyy.push_back(this_phi.val);
+                sphiyy.push_back(this_phi.error);
+            }
+            
+            gp << "set xlabel 'Frequency (Hz)'\n";
+            gp << "set y2tics -180, 60\n";
+            gp << "set y2range [-180:180]\n";
+            gp << "set ytics nomirror\n";
+            gp << "set logscale y\n";
+            gp << "set ylabel '{/Symbol r}_{app} ({/Symbol W}m)'\n";
+            gp << "set y2label '{/Symbol F} ({^0})'\n";
+
+            gp << "plot "
+               <<"'-' with errorbars pt 4 lc rgb '#8E1F2F' axis x1y1,"
+               <<"'-' with errorbars pt 3 lc rgb '#F0BC42' axis x1y2\n";
+            gp.send1d(std::make_tuple(freq,rhoxx,srhoxx));
+            gp.send1d(std::make_tuple(freq,phixx,sphixx));
+
+            gp << "plot "
+               <<"'-' with errorbars pt 4 lc rgb '#8E1F2F' axis x1y1,"
+               <<"'-' with errorbars pt 3 lc rgb '#F0BC42' axis x1y2\n";
+            gp.send1d(std::make_tuple(freq,rhoxy,srhoxy));
+            gp.send1d(std::make_tuple(freq,phixy,sphixy));
+
+            gp << "plot "
+               <<"'-' with errorbars pt 4 lc rgb '#8E1F2F' axis x1y1,"
+               <<"'-' with errorbars pt 3 lc rgb '#F0BC42' axis x1y2\n";
+            gp.send1d(std::make_tuple(freq,rhoyx,srhoyx));
+            gp.send1d(std::make_tuple(freq,phiyx,sphiyx));
+
+            gp << "plot "
+               <<"'-' with errorbars pt 4 lc rgb '#8E1F2F' axis x1y1,"
+               <<"'-' with errorbars pt 3 lc rgb '#F0BC42' axis x1y2\n";
+            gp.send1d(std::make_tuple(freq,rhoyy,srhoyy));
+            gp.send1d(std::make_tuple(freq,phiyy,sphiyy));
+        }
 
         return 0;
     }
@@ -152,4 +238,26 @@ std::string getFileContents(std::ifstream& input){
     std::ostrstream sstr;
     sstr << input.rdbuf();
     return sstr.str();
+}
+
+
+measure get_rho(double z_real, double z_imag, double z_var, double freq){
+    auto omega = 2*M_PI*freq;
+    double rho = (z_real*z_real + z_imag*z_imag)/(mu0*omega);
+    double sigma_z = sqrt(z_var);
+    double sigma_rho = 2*sigma_z*sqrt(pow(z_real+z_imag,2))/(mu0*omega);
+//            double sigma_phi = sqrt(
+//            pow((z_imag/(z_real*z_real + z_imag*z_imag))*sigma_z,2) +
+//            pow((-z_real/(z_real*z_real + z_imag*z_imag))*sigma_z,2)
+//    );
+    return {rho,sigma_rho};
+}
+measure get_phi(double z_real, double z_imag, double z_var){
+    double phi = atan2(z_imag,z_real);
+    double sigma_z = sqrt(z_var);
+    double sigma_phi = sqrt(
+            pow((z_imag/(z_real*z_real + z_imag*z_imag))*sigma_z,2) +
+            pow((-z_real/(z_real*z_real + z_imag*z_imag))*sigma_z,2)
+    );
+    return {phi*180/M_PI, sigma_phi*180/M_PI};
 }
